@@ -1,0 +1,5 @@
+build/**
+firmware/**
+homekit/**
+esp-hall/**
+private_ssid_config.h
