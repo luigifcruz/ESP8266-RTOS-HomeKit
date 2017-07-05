@@ -3,8 +3,6 @@ Native Apple's HomeKit Accessory Implementation for the ESP8266 based on FreeRTO
 
 ### Implemented Functions
 - [x] mDNS TXT Discovery
-- [x] TCP/IP HTTP 1.1 Keep-Alive Server
-- [x] HTTP Request Hexadecimal
 - [x] TLV Decode/Encode 
 - [x] SRP Server
 - [x] Pairing Step M1.
