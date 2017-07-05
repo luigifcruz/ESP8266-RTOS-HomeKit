@@ -1,4 +1,0 @@
-#define IP_ADDRESS 51062
-#define DEBUG_FLAG 1
-#define MAX_WRITE_SIZE 1024
-#define WRITE_HEADER_SIZE 148

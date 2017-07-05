@@ -1,5 +1,3 @@
 build/**
 firmware/**
-esp-hall/**
-private_ssid_config.h
 .DS_Store
