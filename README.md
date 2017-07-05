@@ -5,17 +5,30 @@ Native Apple's HomeKit Accessory Implementation for the ESP8266 based on FreeRTO
 - [x] mDNS TXT Discovery
 - [x] TCP/IP HTTP 1.1 Keep-Alive Server
 - [x] HTTP Request Hexadecimal
-- [ ] TLV Decode/Encode 
-- [ ] SRP Server
+- [x] TLV Decode/Encode 
+- [x] SRP Server
+- [x] Pairing Step M1.
+- [x] Pairing Step M2.
+- [ ] Pairing Step M3.
+- [ ] Pairing Step M4.
+- [ ] Pairing Step M5.
 
 ### Example Output
-Output from the first paring process (M1).  
+Output from the first paring process (M1-M2).  
 ```
-// iOS Device >> Accessory (via TCP HTTP 1.1)
 [TCP] New client connected!
 [TCP] Request received.
 [DEBUG] Header have 119 bytes.
 [DEBUG] Payload have 6 bytes.
 0x00 0x01 0x00 0x06 0x01 0x01
-[TCP] Closing...
+[TLV] Tag received: Pairing method.
+[TLV] Tag received: Pairing process (M1)!
+[TCP] Writing payload with 409 bytes.
+[TCP] Response sent!
+[TCP] Client disconnected...
 ```
+
+### Thanks
+1. [Nordic nRF51 HomeKit Library](https://github.com/aanon4/HomeKit) - With some modifications this library worked very well for the ESP8266. In this project, it handles the Crypto Stuff (TLV Encoding/Decoding and SRP Protocol) required by HomeKit. Big thanks to [Aanon4](https://github.com/aanon4).
+
+2. [TweetNaCl](http://tweetnacl.cr.yp.to/) - Crypto SHA512 & Curve.
