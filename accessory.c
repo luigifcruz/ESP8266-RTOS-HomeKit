@@ -4,8 +4,8 @@
 #include <stdio.h>
 #include <homekit/homekit.h>
 
-#define WIFI_SSID "WIFI_NAME"
-#define WIFI_PASS "WIFI_PASS"
+#define WIFI_SSID "ANDROT"
+#define WIFI_PASS "92@Bz5#3"
 
 void user_init(void) {
     /* Serial Initialization */

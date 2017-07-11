@@ -5,6 +5,15 @@
 #include <lwip/tcp.h>
 
 #include "tcp.h"
+#include "crypto/crypto.h"
+
+session_keys_t session_keys;
+
+static struct
+{
+  uint8_t encrypting;
+  uint8_t havekeys;
+} session_state;
 
 const char *HTTP_HEADER = {
     "HTTP/1.1 200 OK\r\n"
@@ -69,11 +78,6 @@ void send_response(struct tcp_pcb *pcb, uint8_t* payload, uint16_t d_length) {
 
     memcpy(data+w_length, "\r\n0\r\n\r\n", 0x07);
     w_length += 0x07;
-    
-    for(int i=0; i<w_length; i++) {
-        printf("0x%.2x ", data[i]);
-    }
-    printf("\n");
 
     tcp_write(pcb, data, w_length, 0);
     printf("[TCP] Response sent!\n");
@@ -97,10 +101,6 @@ err_t server_recv(void *arg, struct tcp_pcb *pcb, struct pbuf *p, err_t err) {
 #if DEBUG_FLAG
         printf("[DEBUG] Header have %d bytes.\n", header_len);
         printf("[DEBUG] Payload have %d bytes.\n", payload_len);
-        for(int i=0; i<payload_len; i++) {
-            printf("0x%.2x ", payload[i]);
-        }
-        printf("\n");
 #endif
 
         handle_request(payload, payload_len, pcb);
@@ -113,8 +113,28 @@ err_t server_recv(void *arg, struct tcp_pcb *pcb, struct pbuf *p, err_t err) {
     return ERR_OK;
 }
 
- err_t server_accept(void *arg, struct tcp_pcb *pcb, err_t err) {
+void session_genkeys(void) {
+  if (!session_state.havekeys) {
+    session_state.havekeys = 1;
+    uint8_t key[64];
+    crypto_hkdf(key, "Control-Salt", 12, "Control-Read-Encryption-Key\001", 28, session_keys.shared, sizeof(session_keys.shared));
+    memcpy(session_keys.transport.read, key, 32);
+    crypto_hkdf(key, "Control-Salt", 12, "Control-Write-Encryption-Key\001", 29, session_keys.shared, sizeof(session_keys.shared));
+    memcpy(session_keys.transport.write, key, 32);
+    memset(session_keys.transport.read_nonce, 0, sizeof(session_keys.transport.read_nonce));
+    memset(session_keys.transport.write_nonce, 0, sizeof(session_keys.transport.write_nonce));
+  }
+}
+
+err_t server_accept(void *arg, struct tcp_pcb *pcb, err_t err) {
     printf("[TCP] New client connected!\n");
+
+    /*random_create(session_keys.verify.secret, sizeof(session_keys.verify.secret));
+    crypto_scalarmult_base(session_keys.verify.public, session_keys.verify.secret);
+    session_keys.verify.secret[0] &= 248;
+    session_keys.verify.secret[31] = (session_keys.verify.secret[31] & 127) | 64;
+    session_state.encrypting = 0;
+    session_state.havekeys = 0;*/
 
     tcp_recv(pcb, server_recv);
     tcp_accepted(pcb);

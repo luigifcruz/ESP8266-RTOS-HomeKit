@@ -62,8 +62,6 @@ void crypto_scheduleStoreKeys(void)
 
 void crypto_storeKeys(void)
 {
-  uint32_t err_code;
-
   if (crypto_storing)
   {
     memcpy(keys.srp_b, srp.b, 32);
@@ -152,7 +150,7 @@ void crypto_sha512hmac(uint8_t* hash, uint8_t* salt, uint8_t salt_length, uint8_
   crypto_hash_sha512(hash, message2, sizeof(message2));
 }
 
-void crypto_hkdf(uint8_t* target, uint8_t* salt, uint8_t salt_length, uint8_t* info, uint8_t info_length, uint8_t* ikm, uint8_t ikm_length)
+void crypto_hkdf(uint8_t* target, char* salt, uint8_t salt_length, char* info, uint8_t info_length, uint8_t* ikm, uint8_t ikm_length)
 {
   crypto_sha512hmac(target, salt, salt_length, ikm, ikm_length);
   crypto_sha512hmac(target, target, 64, info, info_length);
