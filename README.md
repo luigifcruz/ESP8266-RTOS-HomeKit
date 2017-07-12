@@ -1,5 +1,5 @@
 # ESP8266 RTOS HomeKit Accessory (Work In Progress) 
-Native Apple's HomeKit Accessory Implementation for the ESP8266 based on FreeRTOS ([esp-open-rtos](https://github.com/SuperHouse/esp-open-rtos)).
+Native Apple's HomeKit Accessory Implementation for the ESP8266 based on FreeRTOS ([esp-open-rtos](https://github.com/SuperHouse/esp-open-rtos)). Updates about the development are available at [DEVELOPMENT.md](https://github.com/luigifreitas/ESP8266-RTOS-HomeKit/blob/master/DEVELOPMENT.md) file.
 
 ### Implemented Functions
 - [x] mDNS TXT Discovery

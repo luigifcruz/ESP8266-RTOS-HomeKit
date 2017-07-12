@@ -17,6 +17,7 @@ enum {
     TYPE_SALT = 0x02,
     TYPE_PUBLIC_KEY = 0x03,
     TYPE_PROOF = 0X04,
+    TYPE_ERROR = 0X07,
     TYPE_ENCRYPTED_DATA = 0x05,
     TYPE_STATE = 0x06
 } Tags; 

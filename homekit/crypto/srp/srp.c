@@ -67,7 +67,7 @@ static void MPI_ERROR_CHECK(int CODE)
 {
   if (CODE != 0)
   {
-    printf("[SRP] Error!");
+    printf("[SRP] Error! (%d)\n", CODE);
   }
 }
 
@@ -156,12 +156,12 @@ void srp_start(void)
   srp.serverM1 = 0;
 }
 
-uint8_t srp_setA(uint8_t* abuf, uint16_t length, moretime_t moretime)
+uint8_t srp_setA(uint8_t* abuf, uint16_t length)
 {
   int err_code;
-
   // getK
   {
+    printf("[SRP] Calculating #1...\n");
     mpi s;
     mpi_init(&s);
 
@@ -169,8 +169,9 @@ uint8_t srp_setA(uint8_t* abuf, uint16_t length, moretime_t moretime)
     mpi_init(&n);
     err_code = mpi_read_binary(&n, (uint8_t*)srp_N, srp_N_sizeof);
     MPI_ERROR_CHECK(err_code);
-
+    
     {
+      printf("[SRP] Calculating #11...\n");
       // u = H(A | B)
       mpi u;
       mpi_init(&u);
@@ -195,14 +196,9 @@ uint8_t srp_setA(uint8_t* abuf, uint16_t length, moretime_t moretime)
       mpi_free(&v);
       mpi_free(&u);
     }
-
-    // These calculations take a long time. To avoid the connection dying we ask for more time now.
-    if (moretime)
+    
     {
-      moretime();
-    }
-
-    {
+      printf("[SRP] Calculating #12...\n");
       mpi a;
       mpi_init(&a);
       err_code = mpi_read_binary(&a, abuf, length);
@@ -221,7 +217,7 @@ uint8_t srp_setA(uint8_t* abuf, uint16_t length, moretime_t moretime)
 
       mpi_free(&b);
     }
-
+    
     mpi_free(&n);
 
     uint8_t sbuf[384];
@@ -235,6 +231,7 @@ uint8_t srp_setA(uint8_t* abuf, uint16_t length, moretime_t moretime)
 
   // getM1 - username s abuf srp.B K
   {
+    printf("[SRP] Calculating #2...\n");
     uint8_t message[sizeof(srp_N_hash_srp_G_hash) + 64 + sizeof(srp.salt) + length + 384 + sizeof(srp.K)];
     memcpy(message, srp_N_hash_srp_G_hash, sizeof(srp_N_hash_srp_G_hash));
     crypto_hash_sha512(message + sizeof(srp_N_hash_srp_G_hash), pincode, 10); // First 10 chars only - not the PIN part
@@ -260,6 +257,7 @@ uint8_t srp_setA(uint8_t* abuf, uint16_t length, moretime_t moretime)
 
   // getM2
   {
+    printf("[SRP] Calculating #3...\n");
     uint8_t message[length + sizeof(srp.M1) + sizeof(srp.K)];
     memcpy(message, abuf, length);
     memcpy(message + length, srp.M1, sizeof(srp.M1));
@@ -267,6 +265,7 @@ uint8_t srp_setA(uint8_t* abuf, uint16_t length, moretime_t moretime)
     crypto_hash_sha512(srp.M2, message, sizeof(message));
   }
 
+  printf("[SRP] Done!\n");
   return 1;
 }
 

@@ -47,6 +47,26 @@ uint16_t get_payload_len(char* req) {
     return payload_len;
 }
 
+void session_readData(uint8_t* plaintext, uint16_t length, uint8_t* ciphertext, uint16_t* clength) {
+  if (session_state.encrypting) {
+    session_genkeys();
+    crypto_transportEncrypt(session_keys.transport.read, session_keys.transport.read_nonce, plaintext, length, ciphertext, clength);
+  } else {
+    memcpy(ciphertext, plaintext, length);
+    *clength = length;
+  }
+}
+
+uint8_t session_writeData(uint8_t* ciphertext, uint16_t length, uint8_t* plaintext, uint16_t* plength) {
+  if (session_state.encrypting) {
+    session_genkeys();
+    return crypto_transportDecrypt(session_keys.transport.write, session_keys.transport.write_nonce, ciphertext, length, plaintext, plength);
+  } else {
+    memcpy(ciphertext, plaintext, length);
+    *plength = length;
+    return 1;
+  }
+}
 
 void server_close(struct tcp_pcb *pcb) {
    tcp_arg(pcb, NULL);
