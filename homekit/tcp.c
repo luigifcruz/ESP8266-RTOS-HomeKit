@@ -9,8 +9,7 @@
 
 session_keys_t session_keys;
 
-static struct
-{
+static struct {
   uint8_t encrypting;
   uint8_t havekeys;
 } session_state;
@@ -82,9 +81,11 @@ void send_response(struct tcp_pcb *pcb, uint8_t* payload, uint16_t d_length) {
     uint8_t* data = (uint8_t*)malloc(MAX_WRITE_SIZE);
     uint16_t w_length = 0;
     
+    // Write Request Header.
     memcpy(data, HTTP_HEADER, WRITE_HEADER_SIZE);
     w_length += WRITE_HEADER_SIZE;
 
+    // Write Chunk Length.
     char buffer[5];
     sprintf(buffer, "%05x", d_length);
     memcpy(data+w_length, buffer, 0x05);
@@ -93,9 +94,11 @@ void send_response(struct tcp_pcb *pcb, uint8_t* payload, uint16_t d_length) {
     memcpy(data+w_length, "\r\n", 0x02);
     w_length += 0x02;
 
+    // Write TLV Data. 
     memcpy(data+w_length, payload, d_length);
     w_length += d_length;
 
+    // Write last chunk. 
     memcpy(data+w_length, "\r\n0\r\n\r\n", 0x07);
     w_length += 0x07;
 
@@ -164,6 +167,7 @@ err_t server_accept(void *arg, struct tcp_pcb *pcb, err_t err) {
 void tcp_task_init(void *pvParameters) {
     struct tcp_pcb *pcb;
 
+    // Start TCP server and enable Keepalive.
     pcb = tcp_new();
     pcb->so_options |= SOF_KEEPALIVE;
     tcp_bind(pcb, IP_ADDR_ANY, IP_ADDRESS);

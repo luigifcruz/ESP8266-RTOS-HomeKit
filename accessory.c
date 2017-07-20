@@ -10,9 +10,7 @@
 void user_init(void) {
     /* Serial Initialization */
     uart_set_baud(0, 115200);
-    printf("ESP8266 HOMEKIT - INITIALIZATION\n");
-    printf("PAIRING CODE: 121-00-121\n");
-
+    
     /* Let's (safely) overclock */
     sdk_system_update_cpu_freq(160);
 

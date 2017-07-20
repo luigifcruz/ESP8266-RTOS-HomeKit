@@ -39,6 +39,10 @@ void handle_request(uint8_t* payload, uint16_t p_length, struct tcp_pcb *pcb) {
 }
 
 void homekit_init() {
+    /* Write Accessory Information */
+    printf("ESP8266 HOMEKIT - INITIALIZATION\n");
+    printf("PAIRING CODE: 121-00-121\n");
+    
     /* Crpyto Initialization (requires a shitload of memory) */
     printf("Crypto Initialization: This should take 10-30 seconds.\n");
     crypto_init();
@@ -51,5 +55,5 @@ void homekit_init() {
     mdns_add_facility("ESP8266", "_hap", "", mdns_TCP, IP_ADDRESS, 4500);
 
     /* Tasks Initialization */
-    xTaskCreate(&tcp_task_init, "TCP Daemon", 7500, NULL, 2, NULL);
+    xTaskCreate(&tcp_task_init, "TCP Daemon", 7650, NULL, 2, NULL);
 }

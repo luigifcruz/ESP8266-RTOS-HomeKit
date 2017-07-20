@@ -182,15 +182,17 @@ uint8_t srp_setA(uint8_t* abuf, uint16_t length)
         crypto_hash_sha512(message, message, sizeof(message));
 
         err_code = mpi_read_binary(&u, message, 64);
+        printf("[SRP] Check #1...\n");
         MPI_ERROR_CHECK(err_code);
       }
-
+      
       mpi v;
       mpi_init(&v);
       err_code = mpi_read_binary(&v, srp.v, sizeof(srp.v));
 
       // getS = (A * v^u mod N)^b mod N
       err_code = mpi_exp_mod(&s, &v, &u, &n, NULL);
+      printf("[SRP] Check #2...\n");
       MPI_ERROR_CHECK(err_code);
 
       mpi_free(&v);
@@ -202,9 +204,11 @@ uint8_t srp_setA(uint8_t* abuf, uint16_t length)
       mpi a;
       mpi_init(&a);
       err_code = mpi_read_binary(&a, abuf, length);
+      printf("[SRP] Check #3...\n");
       MPI_ERROR_CHECK(err_code);
 
       err_code = mpi_mul_mpi(&s, &s, &a);
+      printf("[SRP] Check #4...\n");
       MPI_ERROR_CHECK(err_code);
       mpi_free(&a);
 
@@ -213,6 +217,7 @@ uint8_t srp_setA(uint8_t* abuf, uint16_t length)
       err_code = mpi_read_binary(&b, srp.b, sizeof(srp.b));
 
       err_code = mpi_exp_mod(&s, &s, &b, &n, NULL);
+      printf("[SRP] Check #5...\n");
       MPI_ERROR_CHECK(err_code);
 
       mpi_free(&b);
@@ -222,6 +227,7 @@ uint8_t srp_setA(uint8_t* abuf, uint16_t length)
 
     uint8_t sbuf[384];
     err_code = mpi_write_binary(&s, sbuf, sizeof(sbuf));
+    printf("[SRP] Check #6...\n");
     MPI_ERROR_CHECK(err_code);
 
     mpi_free(&s);

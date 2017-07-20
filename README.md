@@ -1,18 +1,19 @@
 # ESP8266 RTOS HomeKit Accessory (Work In Progress) 
 Native Apple's HomeKit Accessory Implementation for the ESP8266 based on FreeRTOS ([esp-open-rtos](https://github.com/SuperHouse/esp-open-rtos)). Updates about the development are available at [DEVELOPMENT.md](https://github.com/luigifreitas/ESP8266-RTOS-HomeKit/blob/master/DEVELOPMENT.md) file.
 
-### Implemented Functions
-- [x] mDNS TXT Discovery
-- [x] TLV Decode/Encode 
-- [x] SRP Server
-- [x] Pairing Step M1.
-- [x] Pairing Step M2.
-- [ ] Pairing Step M3.
-- [ ] Pairing Step M4.
-- [ ] Pairing Step M5.
+### Required Functions
+- [x] mDNS TXT Discovery.
+- [x] TLV Decode/Encode.
+- [x] Pairing Step M1-M2.
+- [ ] Pairing Step M3-M4.
+- [ ] Pairing Step M5-M6.
+- [ ] Pair Verify M1-M2 & M3-M4.
+- [ ] Add Pairing.
+- [ ] Remove Pairing.
+- [ ] List Pairing.
 
 ### Example Output
-Output from the first paring process (M1-M2).  
+Output Pairing Step M1-M2.  
 ```
 [TCP] New client connected!
 [TCP] Request received.
